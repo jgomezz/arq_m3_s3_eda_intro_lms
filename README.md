@@ -133,11 +133,39 @@ public class PaymentEventHandler {
 ```
 
 
-### 5 Ejercicio : Crear intentos de :
+## 5 Ejercicio : Crear intentos de :
 - CourseCreatedEvent   -->  [notifications] handleCourseCreated:  ( 2 intentos)
 - StudentEnrolledEvent -->  Handler: Enviar email de bienvenida ( 2 intentos)
 
-### 6.- Dead Letter Queue (DLQ)
-
+## 6.- Dead Letter Queue (DLQ)
 
 <img src="images/dlq_sequence_diagram.png" alt="DeadLetterQueue" width="700"/>
+
+
+### 6.1.- Crear el FailedEvent
+
+<img src="images/dlq_path_queue_class.png" alt="DeadLetterQueue" width="700"/>
+
+
+FailedEvent.java
+
+```
+package pe.edu.tecsup.lms.shared.infrastructure.dlq;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
+
+@Getter
+@AllArgsConstructor
+public class FailedEvent {
+
+    private final DomainEvent event;
+    private final String message;
+    private final long timestamp;
+
+}
+
+
+```
