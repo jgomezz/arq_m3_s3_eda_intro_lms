@@ -144,7 +144,7 @@ public class PaymentEventHandler {
 
 ### 6.1.- Crear el FailedEvent
 
-<img src="images/dlq_path_queue_class.png" alt="DeadLetterQueue" width="700"/>
+<img src="images/dlq_path_queue_class.png" width="700"/>
 
 
 FailedEvent.java
@@ -167,5 +167,67 @@ public class FailedEvent {
 
 }
 
-
 ```
+
+### 6.1.- Crear una clase DLQ para almacenar los eventos fallidos : DeadLetterQueue.java
+
+
+   ```java
+    @Slf4j
+    @Component
+    public class DeadLetterQueue {
+    
+        // Coleccion para almacenar eventos fallidos
+        private final ConcurrentLinkedQueue<FailedEvent> failedEvents = new ConcurrentLinkedQueue<>();
+    
+        // Método para agregar un evento fallido a la DLQ
+        public void add(DomainEvent event, Exception exception) {
+    
+            // Crear un objeto FailedEvent con detalles del evento fallido
+            FailedEvent failedEvent = new FailedEvent(
+                    event,
+                    exception.getMessage(),
+                    System.currentTimeMillis()
+            );
+    
+            // Agregar el evento fallido a la cola
+            failedEvents.add(failedEvent);
+    
+        }
+
+        // Metodo para obtener todos los eventos fallidos almacenados en la DLQ
+        public List<FailedEvent> getFailedEvents() {
+            return new ArrayList<>(failedEvents);
+        }
+    
+    }
+   ```
+
+### 6.2  Agregar lógica para almacenar eventos fallidos en la DLQ dentro del PaymentHandler : PaymentHandler.java
+
+   ```java
+    @Slf4j
+    @Component
+    @RequiredArgsConstructor  // Agregar constructor para inyección de dependencias
+    public class PaymentHandler {
+    
+        ......
+        private final DeadLetterQueue dlq;  // Inyectar la DLQ
+    
+        .....
+    
+    
+        @Recover  // Manejo cuando se agotan los reintentos
+        public void recover(RuntimeException e, CoursePublishedEvent event) {
+            
+            .....
+            
+            dlq.add(event, e);  // Agregar al final del metodo 
+        }
+    
+    }
+   ```
+### 6.3.- Probar la funcionalidad de la DLQ
+- Publicar un curso varias veces para observar que los eventos fallidos se almacenan en la DLQ después de agotar los reintentos.
+
+
