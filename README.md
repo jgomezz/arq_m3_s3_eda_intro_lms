@@ -136,3 +136,8 @@ public class PaymentEventHandler {
 ### 5 Ejercicio : Crear intentos de :
 - CourseCreatedEvent   -->  [notifications] handleCourseCreated:  ( 2 intentos)
 - StudentEnrolledEvent -->  Handler: Enviar email de bienvenida ( 2 intentos)
+
+### 6.- Dead Letter Queue (DLQ)
+
+
+<img src="images/dlq_sequence_diagram.png" alt="DeadLetterQueue" width="700"/>
