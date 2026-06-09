@@ -145,7 +145,7 @@ public class PaymentEventHandler {
 
 ### 6.1.- Crear el FailedEvent
 
-<img src="images/dlq_path_queue_class.png" width="700"/>
+<img src="images/dlq_path_queue_class.png"  width="300"/>
 
 
 FailedEvent.java
