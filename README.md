@@ -204,13 +204,13 @@ public class FailedEvent {
     }
    ```
 
-### 6.3  Agregar lógica para almacenar eventos fallidos en la DLQ dentro del PaymentHandler : PaymentHandler.java
+### 6.3  Agregar lógica para almacenar eventos fallidos en la DLQ dentro del PaymentEventHandler : PaymentEventHandler.java
 
    ```java
     @Slf4j
     @Component
     @RequiredArgsConstructor  // Agregar constructor para inyección de dependencias
-    public class PaymentHandler {
+    public class PaymentEventHandler {
     
         ......
         private final DeadLetterQueue dlq;  // Inyectar la DLQ
