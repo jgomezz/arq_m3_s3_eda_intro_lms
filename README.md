@@ -243,16 +243,17 @@ public class FailedEvent {
 package pe.edu.tecsup.lms.admin.infrastructure.web.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import pe.edu.tecsup.lms.shared.infrastructure.dlq.FailedEvent;
 
 import java.util.List;
 
-//@Data
+@Getter
 @Builder
 public class DLQResponse {
     private List<FailedEvent> failedEvents;
 }
+
 ```
 
 
