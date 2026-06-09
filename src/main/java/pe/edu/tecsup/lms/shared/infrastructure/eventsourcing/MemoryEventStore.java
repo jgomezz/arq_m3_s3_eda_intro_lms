@@ -1,30 +1,3 @@
-## Implementación de Event Sourcing 
-
-<img src="images/event_sourcing_step_1.png" width="300"   />
-
-
-# 1.1. Crear Event Store (Almacén de evntos)
-
-    EventStore.java
-    ''''Java
-import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
-
-import java.util.List;
-
-public interface EventStore {
-
-    void save(String aggregateId, DomainEvent event);
-
-    List<DomainEvent> getEvents(String aggregateId);
-
-}
-'''
-
-
-
-MemoryEventStore.java
-
-```.java
 package pe.edu.tecsup.lms.shared.infrastructure.eventsourcing;
 
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +40,7 @@ public class MemoryEventStore implements EventStore{
         publisher.publishEvent(event);
     }
 
-    
+
     /**
      *
      * @param aggregateId
@@ -79,5 +52,3 @@ public class MemoryEventStore implements EventStore{
 
     }
 }
-'''
-    
