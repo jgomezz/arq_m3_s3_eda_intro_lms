@@ -134,7 +134,7 @@ public class PaymentEventHandler {
 ```
 
 
-## 5 Ejercicio : Crear intentos de :
+## 5.- Ejercicio : Crear intentos de :
 - CourseCreatedEvent   -->  [notifications] handleCourseCreated:  ( 2 intentos)
 - StudentEnrolledEvent -->  Handler: Enviar email de bienvenida ( 2 intentos)
 
