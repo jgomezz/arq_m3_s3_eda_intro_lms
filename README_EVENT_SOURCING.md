@@ -5,8 +5,8 @@
 
 # 1.1. Crear Event Store (Almacén de evntos)
 
-    EventStore.java
-    ''''Java
+EventStore.java
+'''Java
 import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
 
 import java.util.List;
