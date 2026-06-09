@@ -20,10 +20,7 @@ import java.util.Random;
 public class PaymentEventHandler {
 
     private final Random random = new Random();
-
     private final DeadLetterQueue dlq;  // Inyectar la DLQ
-
-
 
     @Async("eventExecutor")
     @EventListener
@@ -37,7 +34,7 @@ public class PaymentEventHandler {
         log.info("Processing payment ........ : {}", event);
 
         if (this.random.nextBoolean()) {
-            log.info("Processing payment take longer times ........ : {}", event);
+            log.error("Processing payment take longer times ........ : {}", event);
             throw new RuntimeException("Payment failed");
         } else {
             log.info("Payment successfully processed");
@@ -50,6 +47,7 @@ public class PaymentEventHandler {
         //
         log.error("All retries out for recover exception : {}", e.getMessage());
 
+        // Add event failed to DLQ
         dlq.add(event, e);
     }
 

@@ -169,7 +169,7 @@ public class FailedEvent {
 
 ```
 
-### 6.1.- Crear una clase DLQ para almacenar los eventos fallidos : DeadLetterQueue.java
+### 6.2.- Crear una clase DLQ para almacenar los eventos fallidos : DeadLetterQueue.java
 
 
    ```java
@@ -203,7 +203,7 @@ public class FailedEvent {
     }
    ```
 
-### 6.2  Agregar lógica para almacenar eventos fallidos en la DLQ dentro del PaymentHandler : PaymentHandler.java
+### 6.3  Agregar lógica para almacenar eventos fallidos en la DLQ dentro del PaymentHandler : PaymentHandler.java
 
    ```java
     @Slf4j
@@ -227,7 +227,74 @@ public class FailedEvent {
     
     }
    ```
-### 6.3.- Probar la funcionalidad de la DLQ
+### 6.4.- Probar la funcionalidad de la DLQ
 - Publicar un curso varias veces para observar que los eventos fallidos se almacenan en la DLQ después de agotar los reintentos.
 
 
+
+## 7.- Visualizar los EventFailed en Dead Letter Queue (DLQ)
+
+<img src="images/dlq_admin.png"   width=300 />
+
+### 7.1. Crear un DTO para representar los eventos fallidos
+
+```
+package pe.edu.tecsup.lms.admin.infrastructure.web.dto;
+
+import lombok.Builder;
+import lombok.Data;
+import pe.edu.tecsup.lms.shared.infrastructure.dlq.FailedEvent;
+
+import java.util.List;
+
+//@Data
+@Builder
+public class DLQResponse {
+    private List<FailedEvent> failedEvents;
+}
+```
+
+
+### 7.2. Crear un Controlador para exponer en un endpoint el DLQ
+
+```
+package pe.edu.tecsup.lms.admin.infrastructure.web.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pe.edu.tecsup.lms.admin.infrastructure.web.dto.DLQResponse;
+import pe.edu.tecsup.lms.shared.infrastructure.dlq.DeadLetterQueue;
+import pe.edu.tecsup.lms.shared.infrastructure.dlq.FailedEvent;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/dlq")
+@RequiredArgsConstructor
+public class DLQController {
+
+    private final DeadLetterQueue deadLetterQueue;
+
+    @GetMapping
+    public ResponseEntity<DLQResponse> getFailedEvents() {
+
+        DLQResponse response
+                = DLQResponse.builder()
+                .failedEvents(this.deadLetterQueue.getFailedEvents())
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+}
+```
+
+### 7.3. Probar el endpoint para visualizar los eventos fallidos
+- 
+- GET
+```
+http://localhost:8080/api/admin/dlq
+```

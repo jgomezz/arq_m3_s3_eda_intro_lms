@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Component
 public class DeadLetterQueue {
 
-    // Coleccion para almacenar eventos fallidos
+    // Colección para almacenar eventos fallidos
     private final ConcurrentLinkedQueue<FailedEvent> failedEvents = new ConcurrentLinkedQueue<>();
 
     // Método para agregar un evento fallido a la DLQ
@@ -31,7 +31,7 @@ public class DeadLetterQueue {
 
     }
 
-    // Metodo para obtener todos los eventos fallidos almacenados en la DLQ
+    // Método para obtener todos los eventos fallidos almacenados en la DLQ
     public List<FailedEvent> getFailedEvents() {
         return new ArrayList<>(failedEvents);
     }
