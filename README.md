@@ -235,7 +235,7 @@ public class FailedEvent {
 
 ## 7.- Visualizar los EventFailed en Dead Letter Queue (DLQ)
 
-<img src="images/dlq_admin.png"   width="300" />
+<img src="images/dlq_admin.png" width="200"/>
 
 ### 7.1. Crear un DTO para representar los eventos fallidos
 
@@ -294,7 +294,7 @@ public class DLQController {
 ```
 
 ### 7.3. Probar el endpoint para visualizar los eventos fallidos
-- 
+
 - GET
 ```
 http://localhost:8080/api/admin/dlq
