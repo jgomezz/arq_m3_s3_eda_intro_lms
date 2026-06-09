@@ -8,7 +8,7 @@
 ### 2.1. Crear un curso
 POST : http://localhost:8080/api/courses
 
-```
+```json
 {
   "title": "Spring Boot Masterclass - version 2",
   "description": "Learn Spring Boot from scratch",
@@ -41,7 +41,7 @@ Donde el ID del curso es 1
 ## 4. Implementando Retry
 
 ### 4.1. Agregar la dependencia
-```
+```xml  
      <!-- Spring Retry -->
      <dependency>
          <groupId>org.springframework.retry</groupId>
@@ -61,7 +61,8 @@ Donde el ID del curso es 1
 
 
 RetryConfig.java
-```
+
+```java
 package pe.edu.tecsup.lms.shared.infrastructure.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -81,9 +82,9 @@ public class RetryConfig {
 <img src="images/retry_path_PaymentEventHandler.png"/>
 
 PaymentEventHandler.java
-```
-package pe.edu.tecsup.lms.payment.application.eventhandler;
 
+```java
+package pe.edu.tecsup.lms.payment.application.eventhandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -149,7 +150,7 @@ public class PaymentEventHandler {
 
 FailedEvent.java
 
-```
+```java
 package pe.edu.tecsup.lms.shared.infrastructure.dlq;
 
 
@@ -234,11 +235,11 @@ public class FailedEvent {
 
 ## 7.- Visualizar los EventFailed en Dead Letter Queue (DLQ)
 
-<img src="images/dlq_admin.png"   width=300 />
+<img src="images/dlq_admin.png"   width="300" />
 
 ### 7.1. Crear un DTO para representar los eventos fallidos
 
-```
+```java
 package pe.edu.tecsup.lms.admin.infrastructure.web.dto;
 
 import lombok.Builder;
@@ -257,7 +258,7 @@ public class DLQResponse {
 
 ### 7.2. Crear un Controlador para exponer en un endpoint el DLQ
 
-```
+```java
 package pe.edu.tecsup.lms.admin.infrastructure.web.controller;
 
 import lombok.RequiredArgsConstructor;
