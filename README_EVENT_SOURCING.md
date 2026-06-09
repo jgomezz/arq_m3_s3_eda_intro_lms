@@ -1,4 +1,4 @@
-## Implementación de Event Sourcing 
+# Implementación de Event Sourcing 
 
 <img src="images/event_sourcing_step_1.png" width="300"   />
 
@@ -19,8 +19,6 @@ public interface EventStore {
 
 }
 '''
-
-
 
 MemoryEventStore.java
 
