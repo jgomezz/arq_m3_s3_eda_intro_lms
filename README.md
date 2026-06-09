@@ -235,7 +235,7 @@ public class FailedEvent {
 
 ## 7.- Visualizar los EventFailed en Dead Letter Queue (DLQ)
 
-<img src="images/dlq_admin.png" width="200"/>
+<img src="images/dlq_admin.png" width="300"/>
 
 ### 7.1. Crear un DTO para representar los eventos fallidos
 
