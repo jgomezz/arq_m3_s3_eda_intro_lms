@@ -173,10 +173,8 @@ public class StudentEnrolledEvent  extends DomainEvent {
 
 # 1.4. Crear Aggregate Enrollment
 
+- Creamos **Enrollment.java**
 
-- Enrollment.java
-
-- Actualización del Enrollment
 ```java
 package pe.edu.tecsup.lms.enrollments.domain.model;
 
@@ -223,9 +221,7 @@ public class Enrollment {
 }
 ```
 
-Agregamos un nuevo evento
-
-- LessonCompletedEvent.java
+-Agregamos un nuevo evento : **LessonCompletedEvent.java**
 
 ```java 
 package pe.edu.tecsup.lms.enrollments.domain.event;
@@ -245,7 +241,8 @@ public class LessonCompletedEvent extends DomainEvent {
 }
 ``` 
 
-- Actualización del Enrollment
+- Se actualiza **Enrollment.java**
+- 
 ```java
 package pe.edu.tecsup.lms.enrollments.domain.model;
 
@@ -296,10 +293,8 @@ public class Enrollment {
 }
 ```
 
+- Se construye una clase de prueba: **EnrollmentTest.java**
 
-- Construcción de las pruebas
-
-EnrollmentTest.java
 ```java
 package pe.edu.tecsup.lms.enrollments.domain.model;
 
