@@ -6,11 +6,10 @@ import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
 
 @Getter
 @Builder
-public class StudentEnrolledEvent  extends DomainEvent {
+public class LessonCompletedEvent extends DomainEvent {
 
     private final String enrollmentId;
-    private final String studentId;
-    private final String studentName;
-    private final String courseId;
+    private final String lessonId;
+    private final int newProgressPercentage;
 
 }
