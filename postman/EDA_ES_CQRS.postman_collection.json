@@ -1,0 +1,148 @@
+{
+  "info": {
+    "_postman_id": "995e6f88-ee2b-46da-8316-998c7bf08c90",
+    "name": "EDA_ES_CQRS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19020877"
+  },
+  "item": [
+    {
+      "name": "1. COMMAND: Inscribir",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"student-21\",\n  \"studentName\": \"Jose Leon\",\n  \"courseId\": \"course-100\"\n} ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. QUERY: Ver enrollment (Read Model)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-3c12ecca-7dd2-4e84-9338-ef1d59f9774e",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-3c12ecca-7dd2-4e84-9338-ef1d59f9774e"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. COMMAND: Completar lección",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-1768447452089/lessons/lesson-1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-1768447452089",
+            "lessons",
+            "lesson-1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. QUERY: Ver progreso actualizado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-1a69521b-286e-46cc-bf92-e34522a94d51",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-1a69521b-286e-46cc-bf92-e34522a94d51"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. COMMAND: Completar más lecciones",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-1a69521b-286e-46cc-bf92-e34522a94d51/lessons/lesson-4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-1a69521b-286e-46cc-bf92-e34522a94d51",
+            "lessons",
+            "lesson-4"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. QUERY: Ver progreso final",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-1a69521b-286e-46cc-bf92-e34522a94d51",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-1a69521b-286e-46cc-bf92-e34522a94d51"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
