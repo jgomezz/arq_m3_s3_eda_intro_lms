@@ -373,10 +373,8 @@ class EnrollmentTest {
     }
 }
 ```
- 
 
-
-# 1.5. Command Handler para procesar las solicitudes de cambio
+# 1.5. Command Handler para procesar las solicitudes de cambio y generar eventos
 
 # 1.6.  Creación del Controlador
 
