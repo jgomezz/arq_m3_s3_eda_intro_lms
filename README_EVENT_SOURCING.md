@@ -7,7 +7,7 @@
 
 EventStore.java
 ```.Java
-import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
+package pe.edu.tecsup.lms.shared.infrastructure.eventsourcing;
 
 import java.util.List;
 
