@@ -242,7 +242,7 @@ public class LessonCompletedEvent extends DomainEvent {
 ``` 
 
 - Se actualiza **Enrollment.java**
-- 
+
 ```java
 package pe.edu.tecsup.lms.enrollments.domain.model;
 
