@@ -53,6 +53,8 @@ public class EnrollmentCommandHandler {
           // 3. Calcular el nuevo progreso . Logica del negocio
            int newProgress =  enrollment.getProgressPercentage() + 10;
 
+           log.info("Adding lesson {} to enrollment {} with progress {} ", lessonId, enrollmentId, newProgress);
+
           // 4. Crear el nuevo evento para registrar la lesson.
            var eventLesson   = LessonCompletedEvent.builder()
                    .enrollmentId(enrollmentId)

@@ -1,0 +1,84 @@
+{
+  "info": {
+    "_postman_id": "7a7400e2-5d68-434d-b96d-546a709c7238",
+    "name": "EDA_ES",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19020877"
+  },
+  "item": [
+    {
+      "name": "1. COMMAND: Inscribir",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"student-21\",\n  \"studentName\": \"Jose Leon\",\n  \"courseId\": \"course-100\"\n} ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. QUERY: Ver progreso actualizado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-1781311637911/progress",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-1781311637911",
+            "progress"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. COMMAND: Agregar lección",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/enrollment-1781304416247/lessons/lesson-2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "enrollment-1781304416247",
+            "lessons",
+            "lesson-2"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
