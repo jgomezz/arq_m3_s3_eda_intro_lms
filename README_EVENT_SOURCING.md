@@ -376,6 +376,9 @@ class EnrollmentTest {
 
 # 1.5. Command Handler para procesar las solicitudes de cambio a traves de eventos
 
+<img src="images/event_sourcing_step_5.png" width="300"   />
+
+
 - EnrollmentCommandHandler.java
 ```java
 
@@ -483,6 +486,10 @@ public class EnrollStudentCommand {
 ```
 
 # 1.6.  Creación del Controlador
+
+<img src="images/event_sourcing_step_5.png" width="300"   />
+
+
 ```java
 
 package pe.edu.tecsup.lms.enrollments.infrastructure.web;
