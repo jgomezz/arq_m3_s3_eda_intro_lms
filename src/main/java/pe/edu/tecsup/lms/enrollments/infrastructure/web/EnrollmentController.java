@@ -38,6 +38,13 @@ public class EnrollmentController {
         return ResponseEntity.ok(new EnrollmentResponse(enrollmentId));
     }
 
+    /**
+     *  Agregar una lesson al curso
+     *  Cada lesson agrega un 10% de progreso al curso.
+     * @param enrollmentId
+     * @param lessonId
+     * @return
+     */
     @PostMapping("/{enrollmentId}/lessons/{lessonId}")
     public ResponseEntity<Void> addLesson(@PathVariable String enrollmentId,
                                           @PathVariable String lessonId) {
