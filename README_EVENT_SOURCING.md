@@ -376,7 +376,7 @@ class EnrollmentTest {
 
 # 1.5. Command Handler para procesar las solicitudes de cambio a traves de eventos
 
-<img src="images/event_sourcing_step_5.png" width="300"   />
+<img src="images/event_sourcing_step_4.png" width="300"   />
 
 
 - EnrollmentCommandHandler.java
