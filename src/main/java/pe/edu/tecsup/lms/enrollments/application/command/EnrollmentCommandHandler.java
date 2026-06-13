@@ -47,7 +47,7 @@ public class EnrollmentCommandHandler {
           // 1. Obtener todos los eventos de un enrollment id
           var events = this.eventStore.getEvents(enrollmentId);
 
-          // 2. Reconstruir el estado actual del Enrollemnt
+          // 2. Reconstruir el estado actual del Enrollemnt : Event Sourcing
           var enrollment = Enrollment.fromEvents(events);
 
           // 3. Calcular el nuevo progreso . Logica del negocio
