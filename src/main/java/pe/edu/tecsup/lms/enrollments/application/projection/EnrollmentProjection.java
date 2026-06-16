@@ -51,6 +51,8 @@ public class EnrollmentProjection {
         // Actualiza le progresso de la lección
         var newProgress = readModel.getProgress() + event.getNewProgressPercentage();
 
+        readModel.setProgress(newProgress);
+
         // Guardar el objeto actualizado
         this.repository.save(readModel);
 

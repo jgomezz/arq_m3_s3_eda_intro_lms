@@ -20,6 +20,7 @@ package pe.edu.tecsup.lms.enrollments.application.query;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
@@ -34,8 +35,9 @@ public class EnrollmentReadModel {
     private final String studentName;
 
     // Lesson
+    @Setter
     private int progress;
-    
+
 }
 
 ```
@@ -147,6 +149,8 @@ public class EnrollmentProjection {
         // Actualiza le progresso de la lección
         var newProgress = readModel.getProgress() + event.getNewProgressPercentage();
 
+        readModel.setProgress(newProgress);
+
         // Guardar el objeto actualizado
         this.repository.save(readModel);
 
@@ -154,57 +158,34 @@ public class EnrollmentProjection {
     
 }
 
+
 ```
 
 - **EnrollmentProjectionTest.java**
 ```java
-package pe.edu.tecsup.lms.enrollments.application.projection;
+package pe.edu.tecsup.lms.enrollments.application.query;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import pe.edu.tecsup.lms.enrollments.application.query.EnrollmentQueryRepository;
-import pe.edu.tecsup.lms.enrollments.domain.event.StudentEnrolledEvent;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import static org.junit.jupiter.api.Assertions.*;
+@Getter
+@AllArgsConstructor
+@Builder
+public class EnrollmentReadModel {
 
-class EnrollmentProjectionTest {
+    private final String enrollmentId;
+    private final String studentId;
+    private final String courseId;
 
-    private EnrollmentProjection projection;
-    private EnrollmentQueryRepository repository;
+    // Data desnormalizada
+    private final String studentName;
 
-    @BeforeEach
-    void init(){
-        this.repository = new EnrollmentQueryRepository();
-        this.projection = new EnrollmentProjection(this.repository);
-    }
+    // Lesson
+    @Setter
+    private int progress;
 
-    @Test
-    void onStudentEnrolled() {
-
-        StudentEnrolledEvent event
-                = StudentEnrolledEvent.builder()
-                .enrollmentId("enroll-123")
-                .studentId("student-123")
-                .studentName("student-name")
-                .courseId("course-123")
-                .build();
-
-        this.projection.onStudentEnrolled(event);
-
-        var readModelOpt = this.repository.findByEnrollmentId("enroll-123");
-
-        assertTrue(readModelOpt.isPresent());
-
-        var readModel = readModelOpt.get();
-
-        assertEquals("enroll-123", readModel.getEnrollmentId());
-        assertEquals("student-123", readModel.getStudentId());
-        assertEquals("student-name", readModel.getStudentName());
-
-    }
-
-    @Test
-    void onLessonCompleted() {
-    }
 }
+
 ```

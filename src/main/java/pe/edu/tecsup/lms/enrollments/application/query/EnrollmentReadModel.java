@@ -3,6 +3,7 @@ package pe.edu.tecsup.lms.enrollments.application.query;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class EnrollmentReadModel {
     private final String studentName;
 
     // Lesson
+    @Setter
     private int progress;
-
 
 }
