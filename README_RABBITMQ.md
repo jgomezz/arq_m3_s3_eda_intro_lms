@@ -33,3 +33,13 @@ services:
 volumes:
   rabbitmq_data:
 ```
+- Ejecutar el docker compose en la carpeta donde se encuentra el archivo docker-compose.yml
+
+```bash
+
+docker-compose up -d
+
+```
+- Acceder al enlace http://localhost:15672
+    - Usuario: admin
+    - Clave: admin123
