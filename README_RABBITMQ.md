@@ -10,7 +10,10 @@
 
 ## **I.- Creación del servidor de RabbitMQ**
 
-1. Crear el docker compose para RabbitMQ : docker-compose.yml
+1. Requisitos : Tener instalado Docker Desktop : https://www.docker.com/products/docker-desktop/
+
+
+2. Crear el docker compose para RabbitMQ : docker-compose.yml
 
 docker-compose.yml
 
