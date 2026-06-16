@@ -2,6 +2,8 @@ package pe.edu.tecsup.lms.enrollments.infrastructure.web;
 
 import pe.edu.tecsup.lms.enrollments.application.command.EnrollStudentCommand;
 import pe.edu.tecsup.lms.enrollments.application.command.EnrollmentCommandHandler;
+import pe.edu.tecsup.lms.enrollments.application.query.EnrollmentQueryRepository;
+import pe.edu.tecsup.lms.enrollments.application.query.EnrollmentReadModel;
 import pe.edu.tecsup.lms.enrollments.domain.model.Enrollment;
 import pe.edu.tecsup.lms.enrollments.infrastructure.dto.EnrollmentRequest;
 import pe.edu.tecsup.lms.enrollments.infrastructure.dto.EnrollmentResponse;
@@ -18,13 +20,13 @@ public class EnrollmentController {
 
     private final EnrollmentCommandHandler enrollmentCommandHandler;
 
+    private final EnrollmentQueryRepository enrollmentQueryRepository;
 
     /**
      *  Enroll a student in a course
      */
     @PostMapping
-    public ResponseEntity<EnrollmentResponse>
-    enrollStudent(@RequestBody EnrollmentRequest request) {
+    public ResponseEntity<EnrollmentResponse> enrollStudent(@RequestBody EnrollmentRequest request) {
 
         EnrollStudentCommand command
                 = EnrollStudentCommand.builder()
@@ -65,5 +67,18 @@ public class EnrollmentController {
 
         return ResponseEntity.ok().build();
     }
+
+    // CQRS Implementation
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EnrollmentReadModel> getEnrollment(@PathVariable String id) {
+
+        EnrollmentReadModel readModel
+                = this.enrollmentQueryRepository.findByEnrollmentId(id)
+                .orElseThrow(() -> new RuntimeException("No enrollment with id " + id));
+
+        return ResponseEntity.ok(readModel);
+    }
+
 
 }

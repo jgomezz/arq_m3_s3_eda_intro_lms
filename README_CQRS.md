@@ -160,7 +160,7 @@ public class EnrollmentProjection {
 
 
 ```
-
+2.- Se realiza las pruebas
 - **EnrollmentProjectionTest.java**
 ```java
 package pe.edu.tecsup.lms.enrollments.application.query;
@@ -189,3 +189,67 @@ public class EnrollmentReadModel {
 }
 
 ```
+
+
+3.- Modificar EnrollmentController para agregar endpoint de consulta
+
+
+Localización:
+
+<img src="images/cqrs_step_2.png" alt="CQRS" />
+
+
+
+```java
+
+
+import com.tecsup.lms.enrollments.application.command.EnrollStudentCommand;
+import com.tecsup.lms.enrollments.application.command.EnrollmentCommandHandler;
+import com.tecsup.lms.enrollments.application.query.EnrollmentQueryRepository;
+import com.tecsup.lms.enrollments.application.query.EnrollmentReadModel;
+import com.tecsup.lms.enrollments.domain.model.Enrollment;
+import com.tecsup.lms.enrollments.infrastructure.dto.EnrollmentRequest;
+import com.tecsup.lms.enrollments.infrastructure.dto.EnrollmentResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/enrollments")
+@RequiredArgsConstructor
+public class EnrollmentController {
+
+    private final EnrollmentCommandHandler enrollmentCommandHandler;
+    private final EnrollmentQueryRepository enrollmentQueryRepository; // agregar
+
+     ......
+
+
+    /**
+     *  NUEVO END POINT : CQRS --> READ MODE
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<EnrollmentReadModel> getEnrollmentDetails(@PathVariable String id) {
+        EnrollmentReadModel readModel = enrollmentQueryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
+        return ResponseEntity.ok(readModel);
+    }
+
+
+}
+
+   
+```
+
+4.- Probar el endpoint de consulta
+-  Crear el curso
+-  Publicar el curso
+-  Inscribir un estudiante
+-  El estudiante entrega 2 lecciones
+-  Se consulta el endpoint /api/enrollments/{id} para verificar que el read model refleja el progreso actualizado.
+    
