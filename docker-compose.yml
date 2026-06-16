@@ -1,6 +1,4 @@
-name:
-
-
+name: tecsup-dmz
 services:
   rabbitmq:
     image: rabbitmq:3-management
