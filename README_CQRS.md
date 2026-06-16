@@ -247,6 +247,10 @@ public class EnrollmentController {
 ```
 
 4.- Probar el endpoint de consulta
+
+Archivo en la ruta : postman/EDA_ES_CQRS.postman_collection.json
+
+
 -  Crear el curso
 -  Publicar el curso
 -  Inscribir un estudiante
