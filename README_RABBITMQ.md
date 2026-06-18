@@ -285,4 +285,9 @@ public class BeanConfiguration {
 ```
 8.- Realizar la creación de un curso y revisar en la consola del RabbitMQ que se ha recibido el mensaje
 
+**NOTA** : Para que un mensaje sea persistente , se debe cumplir lo siguiente :
+- 1.- Exchange debe ser DURABLE
+- 2.- Queue debe ser DURABLE
+- 3.- El mensaje debe ser PERSISTENTE
+
 
