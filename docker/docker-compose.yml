@@ -3,6 +3,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: lms-rabbitmq
+    hostname: tecsup-lms-rabbitmq
     ports:
       - "5672:5672"       # Puerto para conexiones AMQP
       - "15672:15672"     # Puerto para la interfaz de administración
