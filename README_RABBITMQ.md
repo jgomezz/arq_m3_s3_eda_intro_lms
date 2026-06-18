@@ -273,4 +273,6 @@ public class BeanConfiguration {
 
 
 ```
+8.- Realizar la creación de un curso y revisar en la consola del RabbitMQ que se ha recibido el mensaje
+
 
