@@ -1,4 +1,4 @@
-name: tecsup-dmz
+name: tecsup-lms
 services:
   rabbitmq:
     image: rabbitmq:3-management
