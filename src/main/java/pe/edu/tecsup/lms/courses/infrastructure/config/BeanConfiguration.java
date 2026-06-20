@@ -31,7 +31,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public PublishCourseUseCase publishCourseUseCase(CourseRepository repository, EventPublisher eventPublisher) {
+    public PublishCourseUseCase publishCourseUseCase(CourseRepository repository, RabbitMQEventPublisher eventPublisher) {
 
         return new PublishCourseUseCaseImpl(repository, eventPublisher);
 

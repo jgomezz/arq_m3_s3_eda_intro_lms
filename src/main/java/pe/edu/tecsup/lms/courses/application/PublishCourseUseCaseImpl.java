@@ -9,6 +9,10 @@ import pe.edu.tecsup.lms.courses.domain.exception.CourseNotFoundException;
 import pe.edu.tecsup.lms.courses.domain.model.Course;
 import pe.edu.tecsup.lms.courses.domain.repository.CourseRepository;
 import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
+import pe.edu.tecsup.lms.shared.domain.event.RabbitMQEventPublisher;
+
+import static pe.edu.tecsup.lms.shared.infrastructure.config.RabbitMQConfig.COURSE_CREATED_ROUTING_KEY;
+import static pe.edu.tecsup.lms.shared.infrastructure.config.RabbitMQConfig.COURSE_PUBLISHED_ROUTING_KEY;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,7 +20,8 @@ public class PublishCourseUseCaseImpl implements PublishCourseUseCase {
 
     private final CourseRepository repository;
 
-    private final EventPublisher eventPublisher;
+    //private final EventPublisher eventPublisher;
+    private final RabbitMQEventPublisher eventPublisher; // Nueva linea
 
     @Override
     @Transactional
@@ -36,9 +41,8 @@ public class PublishCourseUseCaseImpl implements PublishCourseUseCase {
                                             saved.getTitle()
                                             );
 
-        // Publicar el evento
-        this.eventPublisher.publish(event);
-
+        // Publicar el evento en RabbitMQ
+        this.eventPublisher.publish(COURSE_PUBLISHED_ROUTING_KEY, event);
         return saved;
     }
 }
