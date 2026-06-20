@@ -339,6 +339,9 @@ import pe.edu.tecsup.lms.shared.infrastructure.config.RabbitMQConfig;
 
 ## **V.- Configuración DLQ en RabbitMQ**
 
+**Requisito** Se debe haber migrado la publicación de cursos a RabbitMQ
+
+
 9.- Definir los intentos máximos de reintento y el tiempo de espera entre reintentos en application.properties
 
 ```properties
