@@ -11,6 +11,7 @@ import pe.edu.tecsup.lms.courses.application.PublishCourseUseCaseImpl;
 
 import pe.edu.tecsup.lms.courses.domain.repository.CourseRepository;
 import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
+import pe.edu.tecsup.lms.shared.infrastructure.event.KafkaEventPublisher;
 
 /**
  * CONFIGURACIÓN DE BEANS
@@ -22,7 +23,7 @@ import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
 public class BeanConfiguration {
 
     @Bean
-    public CreateCourseUseCase createCourseUseCase(CourseRepository repository, EventPublisher eventPublisher) {
+    public CreateCourseUseCase createCourseUseCase(CourseRepository repository, KafkaEventPublisher eventPublisher) {
 
         return new CreateCourseUseCaseImpl(repository, eventPublisher);
 

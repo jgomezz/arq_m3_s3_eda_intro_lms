@@ -7,6 +7,7 @@ import pe.edu.tecsup.lms.courses.domain.event.CourseCreatedEvent;
 import pe.edu.tecsup.lms.courses.domain.model.Course;
 import pe.edu.tecsup.lms.courses.domain.repository.CourseRepository;
 import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
+import pe.edu.tecsup.lms.shared.infrastructure.event.KafkaEventPublisher;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -14,7 +15,9 @@ public class CreateCourseUseCaseImpl implements CreateCourseUseCase {
 
     private final CourseRepository repository;
 
-    private final EventPublisher eventPublisher;
+    //private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher eventPublisher;
+
 
     @Override
     public Course createCourse(String title, String description, String instructor) {

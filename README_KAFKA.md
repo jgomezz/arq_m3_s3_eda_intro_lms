@@ -178,3 +178,167 @@ public class DomainEvent {
 }
 
 ```
+- Se requiere modificar la clase CourseCreatedEvent para soportar la serialización con JSON ( Agregar el constructor sin argumentos)    y sorbreescribir el metodo getKey()
+
+CourseCreatedEvent.java
+
+```java
+package pe.edu.tecsup.lms.courses.domain.event;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
+
+@AllArgsConstructor
+@Getter
+@ToString
+public class CourseCreatedEvent extends DomainEvent {
+
+    private final String courseId;
+    private final String title;
+    private final String instructor;
+
+    @Override
+    public String getKey() {       // SOBREESCRIBIR EL METODO
+        return this.courseId;
+    }
+
+}
+
+```
+- Se requiere crear el publicador de eventos para Kafka
+
+KafkaEventPublisher.java
+
+```java
+package pe.edu.tecsup.lms.shared.infrastructure.event;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
+import pe.edu.tecsup.lms.shared.infrastructure.config.KafkaConfig;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class KafkaEventPublisher {
+
+    private final KafkaTemplate<String, DomainEvent> kafkaTemplate;
+
+    public void publish(DomainEvent event) {
+
+        log.info("Publishing {}", event);
+
+        String key = event.getKey();
+
+        this.kafkaTemplate.send(
+                KafkaConfig.COURSE_EVENT_TOPIC,
+                key,
+                event);
+
+    }
+
+    // La key sirve para identificar a que particion va el mensaje
+    // HASH(key) % N_PARTICIONES = particion
+    
+
+}
+```
+- Adaptar la clase CreateCourseUseCaseImpl.java
+
+```java
+package pe.edu.tecsup.lms.courses.application;
+
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import pe.edu.tecsup.lms.courses.domain.event.CourseCreatedEvent;
+import pe.edu.tecsup.lms.courses.domain.model.Course;
+import pe.edu.tecsup.lms.courses.domain.repository.CourseRepository;
+import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
+import pe.edu.tecsup.lms.shared.infrastructure.event.KafkaEventPublisher;
+
+@Slf4j
+@RequiredArgsConstructor
+public class CreateCourseUseCaseImpl implements CreateCourseUseCase {
+
+    private final CourseRepository repository;
+
+    //private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher eventPublisher;
+
+
+    @Override
+    public Course createCourse(String title, String description, String instructor) {
+        Course course = Course.create(title, description, instructor);
+        Course saved = repository.save(course);
+        log.info("Course created: {}", saved.getId());
+
+        // Crear el evento
+        CourseCreatedEvent event =
+                new CourseCreatedEvent(
+                        saved.getId().toString(),
+                        saved.getTitle(),
+                        saved.getInstructor());
+
+        // Publicar el evento
+        this.eventPublisher.publish(event);
+
+
+        return saved;
+    }
+}
+
+
+```
+
+- Adaptar la clase BeanConfiguration.java
+
+```java
+package pe.edu.tecsup.lms.courses.infrastructure.config;
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import pe.edu.tecsup.lms.courses.application.CreateCourseUseCase;
+
+import pe.edu.tecsup.lms.courses.application.CreateCourseUseCaseImpl;
+import pe.edu.tecsup.lms.courses.application.PublishCourseUseCase;
+import pe.edu.tecsup.lms.courses.application.PublishCourseUseCaseImpl;
+
+import pe.edu.tecsup.lms.courses.domain.repository.CourseRepository;
+import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
+import pe.edu.tecsup.lms.shared.infrastructure.event.KafkaEventPublisher;
+
+/**
+ * CONFIGURACIÓN DE BEANS
+ *
+ * Registra los Use Cases (impls) detrás de su interfaz (input port).
+ * El controller depende de la interfaz, no de la implementación.
+ */
+@Configuration
+public class BeanConfiguration {
+
+    @Bean
+    public CreateCourseUseCase createCourseUseCase(CourseRepository repository, KafkaEventPublisher eventPublisher) {
+
+        return new CreateCourseUseCaseImpl(repository, eventPublisher);
+
+    }
+
+    @Bean
+    public PublishCourseUseCase publishCourseUseCase(CourseRepository repository, EventPublisher eventPublisher) {
+
+        return new PublishCourseUseCaseImpl(repository, eventPublisher);
+
+    }
+}
+
+```
+
+5.- Realizar pruebas de creación de curso
+
+

@@ -14,4 +14,9 @@ public class CourseCreatedEvent extends DomainEvent {
     private final String title;
     private final String instructor;
 
+    @Override
+    public String getKey() {       // SOBREESCRIBIR EL METODO
+        return this.courseId;
+    }
+
 }
