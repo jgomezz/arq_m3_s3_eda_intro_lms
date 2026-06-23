@@ -342,3 +342,6 @@ public class BeanConfiguration {
 5.- Realizar pruebas de creación de curso
 
 
+6.- Implementar un Consumidor de Eventos con Kafka ( subdomain notifications)
+
+
