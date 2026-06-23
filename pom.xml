@@ -42,6 +42,7 @@
 		</dependency>
 
 		<!-- Spring Retry -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.retry</groupId>
 			<artifactId>spring-retry</artifactId>
@@ -51,6 +52,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 		</dependency>
+		-->
 
 		<!-- Spring for Apache Kafka -->
 		<dependency>
