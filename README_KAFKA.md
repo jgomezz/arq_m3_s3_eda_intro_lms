@@ -250,7 +250,7 @@ public class KafkaEventPublisher {
         String key = event.getKey();
 
         this.kafkaTemplate.send(
-                KafkaConfig.COURSE_EVENT_TOPIC,
+                KafkaConfig.COURSE_EVENTS_TOPIC,
                 key,
                 event);
 
@@ -258,7 +258,7 @@ public class KafkaEventPublisher {
 
     // La key sirve para identificar a que particion va el mensaje
     // HASH(key) % N_PARTICIONES = particion
-    
+
 
 }
 ```
@@ -360,6 +360,7 @@ public class BeanConfiguration {
 6.- Implementar un Consumidor de Eventos con Kafka ( subdomain notifications)
 
 CourseEventHandler.java
+
 ```java
 package pe.edu.tecsup.lms.notifications.application.eventhandler;
 
@@ -380,10 +381,10 @@ public class CourseEventHandler {
 
     //@EventListener
     @KafkaListener(
-         topics = KafkaConfig.COURSE_EVENT_TOPIC,      // Topico que va a escuchando
-         groupId = "course-notifications-group"         // Grupo de consumidores
+            topics = KafkaConfig.COURSE_EVENTS_TOPIC,      // Topico que va a escuchando
+            groupId = "course-notifications-group"         // Grupo de consumidores
     )
-     public void handleCourseEvents(DomainEvent event) {
+    public void handleCourseEvents(DomainEvent event) {
         if (event instanceof CourseCreatedEvent) {
             this.handleCourseCreated((CourseCreatedEvent) event);
         } else {
@@ -391,8 +392,7 @@ public class CourseEventHandler {
         }
     }
 
-    public void handleCourseCreated(CourseCreatedEvent event)
-    {
+    public void handleCourseCreated(CourseCreatedEvent event) {
         log.info("[Kafka] Course created event received: {}", event);
 
     }
@@ -407,4 +407,260 @@ public class CourseEventHandler {
 Implementar la productor y consumidor con Kakfa para el  evento : Publicación de Curso.
 
 
+# DLQ  EN KAFKA
 
+<img src="images/kafka_dlq.png" alt="DLQ Kafka" />
+
+
+### 1.- Crear el tópico DLQ
+
+KafkaConfig.java
+
+```java
+
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.TopicBuilder;
+
+/**
+ * KafkaConfig
+ *
+ *             Topic       -->     Particiones
+ *       Eventos del curso             3
+ *          course.events
+ */
+@EnableKafka
+@Configuration
+public class KafkaConfig {
+
+    // Setting topics
+    public static final String COURSE_EVENTS_TOPIC = "course.events";
+
+    // DLQ
+    public static final String DLQ_COURSE_EVENTS_TOPIC = "dlq.course.events";  // ✅ DLQ Topic
+
+    // Setting Queues/Partitions
+
+    /**
+     *  Topic de eventos de cursos
+     * @return
+     */
+    @Bean
+    public NewTopic courseEventsTopic() {
+        return new NewTopic(COURSE_EVENTS_TOPIC, // topic
+                3,  // Nro particiones
+                (short) 1  // Nro de replicas
+        );
+    }
+
+    // DLQ
+    @Bean
+    public NewTopic dlqCourseEventsTopic() {
+        return TopicBuilder.name(DLQ_COURSE_EVENTS_TOPIC)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+}
+
+```
+
+
+### 2.- Migrar al DLQ a Kafka
+
+
+DeadLetterQueue.java
+
+```java
+
+import com.tecsup.lms.shared.domain.event.DomainEvent;
+import com.tecsup.lms.shared.infrastructure.config.KafkaConfig;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class DeadLetterQueue {
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ConcurrentLinkedQueue<FailedEvent> failedEvents = new ConcurrentLinkedQueue<>();
+
+    public void add(DomainEvent event, Exception exception, String originalTopic, long originalOffset) {
+
+        FailedEvent failedEvent = new FailedEvent(
+                event,
+                exception.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        failedEvents.add(failedEvent);
+
+        log.info("Event added to DLQ: {} [{}]", event.getEventType(), event.getEventId());
+
+        // Enviar a Kafka DLQ topic
+        sendToKafkaDLQ(event, exception, originalTopic, originalOffset);
+
+    }
+
+    private void sendToKafkaDLQ(DomainEvent event, Exception exception, String originalTopic, long originalOffset) {
+        // Construir el mensaje DLQ
+
+        // Crear mensaje DLQ con metadata completa
+        Map<String, Object> dlqMessage = new HashMap<>();
+
+        // Información del evento original
+        dlqMessage.put("eventId", event.getEventId());
+        dlqMessage.put("eventType", event.getEventType());
+        dlqMessage.put("aggregateId", event.getKey());
+        dlqMessage.put("originalEvent", event);
+
+        // Enviar a Kafka DLQ
+        kafkaTemplate.send(
+                KafkaConfig.DLQ_COURSE_EVENTS_TOPIC,
+                event.getKey(),
+                dlqMessage
+        );
+        log.info("Event sent to Kafka DLQ: {} [{}]", event.getEventType(), event.getEventId());
+
+    }
+    
+    public List<FailedEvent> getFailedEvents() {
+
+        return new ArrayList<>(failedEvents);
+    }
+}
+
+```
+3.- Adaptar el PaymentHandler para usar DLQ
+
+
+PaymentHandler.java
+```java
+
+package pe.edu.tecsup.lms.payment.application.eventhandler;
+
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import pe.edu.tecsup.lms.courses.domain.event.CoursePublishedEvent;
+import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
+import pe.edu.tecsup.lms.shared.infrastructure.config.KafkaConfig;
+import pe.edu.tecsup.lms.shared.infrastructure.dlq.DeadLetterQueue;
+
+import java.util.Random;
+
+@Slf4j
+@RequiredArgsConstructor  // Agregar constructor para inyección de dependencias
+@Component
+public class PaymentEventHandler {
+
+    private final Random random = new Random();
+    private final DeadLetterQueue dlq;  // Inyectar la DLQ
+
+    @RetryableTopic(
+            attempts = "2", // Numero de reintentos
+            backoff = @Backoff(
+                    delay = 2000,      // Tiempo inicial de espera
+                    multiplier = 2.0   // Multiplicador exponencial
+            ),
+            autoCreateTopics = "false",
+            dltTopicSuffix = "-dlt", // Sufijo para el topico de DLQ
+            include = RuntimeException.class
+    )
+    @KafkaListener(
+            topics = KafkaConfig.COURSE_EVENTS_TOPIC, // Topico a escuchar
+            groupId = "payment-service-group"    // Grupo de consumidores
+    )
+    public void handleCourseEvents(DomainEvent event) throws InterruptedException  {
+        if (event instanceof CoursePublishedEvent) {
+            handleCoursePublished((CoursePublishedEvent) event);
+        }
+
+    }
+
+
+    /**
+     *
+     * @param event
+     * @throws InterruptedException
+     */
+    public void handleCoursePublished(CoursePublishedEvent event) throws InterruptedException {
+
+        log.info("Processing payment ........ : {}", event);
+
+        if (this.random.nextBoolean()) {
+            log.error("Processing payment take longer times ........ : {}", event);
+            throw new RuntimeException("Payment failed");
+        } else {
+            log.info("Payment successfully processed");
+        }
+
+    }
+
+    /**
+     * Manejador de Dead Letter Queue
+     * @param event
+     * @param e
+     */
+    @DltHandler
+    public void dltHandler(
+            DomainEvent event,
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+            @Header(KafkaHeaders.OFFSET) long offset,
+            @Header(KafkaHeaders.EXCEPTION_MESSAGE) String errorMessage) {
+
+        log.error("[PAYMENT-DLT] All retries exhausted - Sending to DLQ");
+
+        // Enviar a DLQ para procesamiento manual
+        RuntimeException exception = new RuntimeException(errorMessage);
+        dlq.add(event, exception, topic, offset);
+    }
+
+}
+```
+4.- Retirar librerias del pom.xml que ya no se usan
+
+```xml
+
+    <!-- Retirar estas dependencias -->
+
+        <!-- Spring Retry -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>2.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        
+```
+
+5.- Realizar pruebas con la siguiente secuencia:
+
+- Crear un curso a traves del evento de CourseCreatedEvent
+- Publicar el curso a traves del evento CoursePublishedEvent

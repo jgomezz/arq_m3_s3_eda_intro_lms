@@ -21,7 +21,7 @@ public class KafkaEventPublisher {
         String key = event.getKey();
 
         this.kafkaTemplate.send(
-                KafkaConfig.COURSE_EVENT_TOPIC,
+                KafkaConfig.COURSE_EVENTS_TOPIC,
                 key,
                 event);
 

@@ -30,7 +30,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public PublishCourseUseCase publishCourseUseCase(CourseRepository repository, EventPublisher eventPublisher) {
+    public PublishCourseUseCase publishCourseUseCase(CourseRepository repository, KafkaEventPublisher eventPublisher) {
 
         return new PublishCourseUseCaseImpl(repository, eventPublisher);
 

@@ -9,6 +9,7 @@ import pe.edu.tecsup.lms.courses.domain.exception.CourseNotFoundException;
 import pe.edu.tecsup.lms.courses.domain.model.Course;
 import pe.edu.tecsup.lms.courses.domain.repository.CourseRepository;
 import pe.edu.tecsup.lms.shared.domain.event.EventPublisher;
+import pe.edu.tecsup.lms.shared.infrastructure.event.KafkaEventPublisher;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,7 +17,8 @@ public class PublishCourseUseCaseImpl implements PublishCourseUseCase {
 
     private final CourseRepository repository;
 
-    private final EventPublisher eventPublisher;
+//    private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher eventPublisher;
 
     @Override
     @Transactional
