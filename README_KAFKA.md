@@ -402,4 +402,9 @@ public class CourseEventHandler {
 
 ```
 
+## **III.- Ejercicio**
+
+Implementar la publicación y consumo con Kakfa para el  evento : Publicación de Curso.
+
+
 
