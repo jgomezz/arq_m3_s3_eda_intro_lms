@@ -23,6 +23,9 @@ public class KafkaConfig {
 
     public static final String PAYMENT_PROCESSED_TOPIC = "payment.processed";   // AGREGAR
 
+    public static final String PAYMENT_FAILED_TOPIC = "payment.failed";  // AGREGAR
+
+
     // Set QUEUES/PARTITIONS
 
     /**
@@ -57,11 +60,21 @@ public class KafkaConfig {
                 .build();
     }
 
-    // NUEVO BEAN
     @Bean
     public NewTopic paymentProcessedTopic() {
         return TopicBuilder
                 .name(PAYMENT_PROCESSED_TOPIC)
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+
+    // NUEVO BEAN
+    @Bean
+    public NewTopic paymentFailedTopic() {
+        return TopicBuilder
+                .name(PAYMENT_FAILED_TOPIC)
                 .partitions(3)
                 .replicas(1)
                 .build();
