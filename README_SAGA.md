@@ -579,7 +579,7 @@ public class KafkaEventPublisher {
 ## 5.- Pruebas
 
 ```json
-GET http://localhost:8080/api/enrollments/request
+POST http://localhost:8080/api/enrollments/request
 {
 "studentId": "student-21",
 "studentName": "Jose Leon",
