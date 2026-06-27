@@ -223,7 +223,7 @@ package com.tecsup.lms.shared.infrastructure.config;
     }
 
 ```
-## 5.- Adaptar en KafkaPublisher.java para enviar el evento EnrollmentRequestedEvent
+## 5.- Adaptar en KafkaEventPublisher.java para enviar el evento EnrollmentRequestedEvent
 
 
 ```java
