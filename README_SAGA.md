@@ -225,11 +225,47 @@ package com.tecsup.lms.shared.infrastructure.config;
 ```
 ## 5.- Adaptar en KafkaPublisher.java para enviar el evento EnrollmentRequestedEvent
 
-Adaptar el método publish para manejar el nuevo evento EnrollmentRequestedEvent
-```java
-package com.tecsup.lms.shared.infrastructure.event;
 
-        private String getTopicFromEvent(DomainEvent event) {
+```java
+package pe.edu.tecsup.lms.shared.infrastructure.event;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+import pe.edu.tecsup.lms.courses.domain.event.CourseCreatedEvent;
+import pe.edu.tecsup.lms.courses.domain.event.CoursePublishedEvent;
+import pe.edu.tecsup.lms.enrollments.domain.event.EnrollmentRequestedEvent;
+import pe.edu.tecsup.lms.shared.domain.event.DomainEvent;
+import pe.edu.tecsup.lms.shared.infrastructure.config.KafkaConfig;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class KafkaEventPublisher {
+
+    private final KafkaTemplate<String, DomainEvent> kafkaTemplate;
+
+    public void publish(DomainEvent event) {
+
+        log.info("Publishing {}", event);
+
+        String topic = getTopicFromEvent(event); // Nuevo cambio
+
+        String key = event.getKey();
+
+        //
+
+        this.kafkaTemplate.send(
+                topic,          // Nuevo cambio
+                key,
+                event);
+
+    }
+
+    //Nuevo método
+    
+    private String getTopicFromEvent(DomainEvent event) {
 
         if ( event instanceof CourseCreatedEvent ||
                 event instanceof CoursePublishedEvent) {
@@ -239,9 +275,9 @@ package com.tecsup.lms.shared.infrastructure.event;
         } else {
             throw new IllegalArgumentException("Unknown event type: " + event.getEventType());
         }
-
     }
-
+    
+}
 ```
 ## 6.- Pruebas
 
