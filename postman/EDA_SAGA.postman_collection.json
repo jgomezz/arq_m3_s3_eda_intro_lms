@@ -1,0 +1,40 @@
+{
+  "info": {
+    "_postman_id": "4ecbed3d-f3f8-467d-9bd3-4efdfaaa099e",
+    "name": "EDA_SAGA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19020877"
+  },
+  "item": [
+    {
+      "name": "1. COMMAND : Solicitar inscripcion",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentId\": \"student-21\",\n  \"studentName\": \"Jose Leon\",\n  \"courseId\": \"course-100\",\n  \"amount\": 99.99\n} ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/enrollments/request",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "enrollments",
+            "request"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

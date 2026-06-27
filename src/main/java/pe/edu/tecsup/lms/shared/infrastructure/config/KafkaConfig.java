@@ -21,6 +21,8 @@ public class KafkaConfig {
     // SAGA
     public static final String ENROLLMENT_REQUEST_TOPIC = "enrollment.requested";
 
+    public static final String PAYMENT_PROCESSED_TOPIC = "payment.processed";   // AGREGAR
+
     // Set QUEUES/PARTITIONS
 
     /**
@@ -54,4 +56,15 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    // NUEVO BEAN
+    @Bean
+    public NewTopic paymentProcessedTopic() {
+        return TopicBuilder
+                .name(PAYMENT_PROCESSED_TOPIC)
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
 }

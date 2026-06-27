@@ -282,13 +282,28 @@ public class KafkaEventPublisher {
 ## 6.- Pruebas
 
 ```json
-GET http://localhost:8080/api/enrollments/request
+POST http://localhost:8080/api/enrollments/request
 {
 "studentId": "student-21",
 "studentName": "Jose Leon",
 "courseId": "course-100",
 "amount": 99.99
 } 
+```
+
+- Usando Postman, el enlace del <a href="postman/EDA_SAGA.postman_collection.json">Json</a> para Postman 
+
+- Usando curl
+
+```bash
+curl -s -X POST http://localhost:9099/api/es/enrollments/request \
+-H "Content-Type: application/json" \
+-d '{
+"studentId": "student-21",
+"studentName": "Jose Leon",
+"courseId": "course-100",
+"amount": 99.99
+}'
 ```
 
 # II.- IMPLEMENTACIÓN del consumidor del Evento EnrollmentRequestedEvent
